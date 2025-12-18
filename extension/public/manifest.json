@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "CorePulse",
+  "version": "1.0",
+  "description": "Track Core Web Vitals history.",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "CorePulse"
+  },
+  "permissions": ["activeTab"],
+  "host_permissions": ["http://localhost:5000/*"]
+}
