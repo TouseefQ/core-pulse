@@ -12,8 +12,15 @@ app.use(express.json());
 const { Pool } = pg;
 
 // ⚠️ We use 127.0.0.1 to avoid IPv6 issues on Windows
+const isProduction = process.env.NODE_ENV === 'production';
+
+const connectionString = process.env.DATABASE_URL 
+  ? process.env.DATABASE_URL 
+  : 'postgresql://user:password@127.0.0.1:5432/core_pulse_db';
+
 const pool = new Pool({
-  connectionString: 'postgresql://user:password@127.0.0.1:5432/core_pulse_db'
+  connectionString,
+  ssl: isProduction ? { rejectUnauthorized: false } : false
 });
 
 // Auto-create tables on startup
