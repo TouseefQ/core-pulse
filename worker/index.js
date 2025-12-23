@@ -8,9 +8,14 @@ dotenv.config();
 
 const { Pool } = pg;
 
-// ⚠️ Standard DB Connection
+const connectionString = process.env.DATABASE_URL || 'postgresql://user:password@127.0.0.1:5432/core_pulse_db';
+
+// Detect if we are using a Cloud URL (Railway URLs always start with 'postgresql://')
+const isCloud = connectionString.includes('railway.app');
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://user:password@127.0.0.1:5432/core_pulse_db'
+  connectionString,
+  ssl: isCloud ? { rejectUnauthorized: false } : false
 });
 
 async function runAudit(url) {
@@ -19,8 +24,14 @@ async function runAudit(url) {
   // 1. Launch Browser using Puppeteer (Downloads its own Chrome, guaranteed to work)
   console.log("   🚀 Launching Puppeteer Browser...");
   const browser = await puppeteer.launch({
-    headless: true, // Set to false if you want to see the browser popup
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu']
+    headless: true,
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined, // Use installed Chrome in Docker
+    args: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox', 
+      '--disable-gpu',
+      '--disable-dev-shm-usage' // Helps with memory in Docker
+    ]
   });
 
   // 2. Get the Port that Puppeteer opened
@@ -92,9 +103,7 @@ async function processQueue() {
   }
 }
 
-// ... (rest of your code remains the same)
-
-const INTERVAL_MINUTES = 60; // How often to check (in minutes)
+const INTERVAL_MINUTES = 0.5; // How often to check (in minutes)
 
 async function startService() {
   console.log(`🚀 CorePulse Worker started. Running every ${INTERVAL_MINUTES} minutes.`);

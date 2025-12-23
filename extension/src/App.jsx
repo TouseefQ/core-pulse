@@ -40,7 +40,7 @@ function App() {
 
   const fetchHistory = async (url) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/history?url=${url}`);
+      const res = await axios.get(`https://core-pulse-production.up.railway.app/api/history?url=${url}`);
       setHistory(res.data);
     } catch (err) {
       console.error("Fetch error", err);
@@ -51,7 +51,7 @@ function App() {
     setLoading(true);
     setStatus('Sending to worker...');
     try {
-      await axios.post('http://localhost:5000/api/track', { url: currentUrl });
+      await axios.post('https://core-pulse-production.up.railway.app/api/track', { url: currentUrl });
       setStatus('✅ Tracking started! Run the worker to see results.');
       // Refresh after a delay
       setTimeout(() => fetchHistory(currentUrl), 2000);
