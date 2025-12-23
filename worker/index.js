@@ -103,7 +103,7 @@ async function processQueue() {
   }
 }
 
-const INTERVAL_MINUTES = 0.5; // How often to check (in minutes)
+const INTERVAL_MINUTES = 120; // How often to check (in minutes)
 
 async function startService() {
   console.log(`🚀 CorePulse Worker started. Running every ${INTERVAL_MINUTES} minutes.`);
